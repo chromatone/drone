@@ -1,11 +1,12 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useGesture } from '@vueuse/gesture'
-import { noteColor, notes } from "use-chromatone"
+import { pitchColor } from "./calculations"
 import { useDrone } from "./useDrone"
 import PitchDroneVoice from './PitchDroneVoice.vue'
 import ControlRotary from './ControlRotary.vue'
 
+const notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
 
 const drone = useDrone()
 
@@ -87,7 +88,7 @@ useGesture({
       .p-2.m-1.flex-1.cursor-pointer.rounded-xl(
         v-for="(note, pitch) in notes" 
         :key="note"
-        :style="{ backgroundColor: noteColor(pitch, 3, drone.pitch == pitch ? 1 : 0.2, drone.pitch == pitch ? 1 : 0.4) }"
+        :style="{ backgroundColor: pitchColor(pitch, 3, drone.pitch == pitch ? 1 : 0.2, drone.pitch == pitch ? 1 : 0.4) }"
         @click="drone.pitch = pitch"
       ) {{ note }}
 </template>

@@ -1,4 +1,4 @@
-import { freqPitch, pitchFreq, learnCC, noteColor } from "use-chromatone";
+import { freqPitch, pitchFreq, pitchColor } from "./calculations";
 import { Frequency, Synth, PanVol, gainToDb, LFO, Meter, Filter, Gain } from "tone";
 import { useRafFn, onKeyStroke } from "@vueuse/core";
 import { reactive, computed, shallowReactive, onBeforeUnmount, watch } from 'vue'
@@ -23,7 +23,7 @@ const drone = reactive({
   }),
   cents: computed(() => getCents(drone.freq) % 1200),
   centDiff: computed(() => drone.cents - drone.pitch * 100),
-  color: computed(() => noteColor(drone.pitch, 0)),
+  color: computed(() => pitchColor(drone.pitch, 2)),
 });
 
 const audio = shallowReactive({
@@ -80,32 +80,12 @@ export function useVoice(interval) {
     pan: useClamp(useStorage(`drone-${interval}-pan`, 0), -1, 1),
     freq: computed(() => drone.freq * Math.pow(2, interval / 12)),
     note: computed(() => Frequency(voice.freq).toNote()),
-    color: computed(() => noteColor(Frequency(voice.freq).toMidi() - 9, 0)),
+    color: computed(() => pitchColor(Frequency(voice.freq).toMidi() - 9, 2)),
     lfo: 0,
     panning: 0,
   });
 
 
-
-  const midiVol = learnCC({
-    param: `drone-${interval}-vol`,
-    number: 5 + voiceCount,
-  })
-
-  watch(midiVol, vol => {
-    voice.vol = vol
-    if (vol > 0)
-      voice.play = true
-  })
-
-  const midiPan = learnCC({
-    param: `drone-${interval}-pan`,
-    number: 6 + voiceCount,
-  })
-
-  watch(midiPan, pan => {
-    voice.pan = (pan - 0.5) * 2
-  })
 
   voiceCount += 2
 
