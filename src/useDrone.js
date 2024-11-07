@@ -11,6 +11,7 @@ const drone = reactive({
   started: false,
   stopped: true,
   filterFreq: useStorage("drone-filter-freq", 1000),
+  filterQ: useStorage("drone-filter-q", 1),
   volume: useStorage("drone-vol", 0.5),
   note: computed(() => Frequency(drone.freq).toNote()),
   pitch: computed({
@@ -59,6 +60,13 @@ export function useDrone() {
       }
     );
 
+    watch(
+      () => drone.filterQ,
+      (q) => {
+        audio.filter.Q.targetRampTo(q, 0.1);
+      }
+    );
+
   }
 
 
@@ -75,7 +83,7 @@ export function useVoice(interval) {
 
   const voice = reactive({
     play: false,
-    active: false,
+    active: interval === 0 ? true : false,
     vol: useClamp(useStorage(`drone-${interval}-vol`, 0.8), 0, 1),
     pan: useClamp(useStorage(`drone-${interval}-pan`, 0), -1, 1),
     freq: computed(() => drone.freq * Math.pow(2, interval / 12)),
@@ -93,10 +101,8 @@ export function useVoice(interval) {
   watch(
     () => drone.stopped,
     (stop) => {
-      if (stop)
-        voice.play = false;
-      else if (voice.active)
-        voice.play = true;
+      if (stop) { voice.play = false }
+      else if (voice.active) { voice.play = true }
     }
   );
 
