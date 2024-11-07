@@ -27,7 +27,21 @@ function viteBuildScript() {
     name: 'vite-build-script',
     transformIndexHtml(html) {
       if (process.env.NODE_ENV === 'production') {
-        return html.replace(/<!-- Stats production build insert -->/, `<script defer src="https://stats.chromatone.center/script.js" data-website-id="5f20daa8-3866-42a6-a0e5-e66ebb70db0e"></script>`);
+        return html.replace(/<!-- Stats production build insert -->/, `<script defer src="https://stats.chromatone.center/script.js" data-website-id="5f20daa8-3866-42a6-a0e5-e66ebb70db0e"></script
+          
+          <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('Service Worker registered with scope: ', registration.scope);
+          })
+          .catch((error) => {
+            console.error('Service Worker registration failed: ', error);
+          });
+      });
+    }
+  </script>`);
       }
       return html;
     },
