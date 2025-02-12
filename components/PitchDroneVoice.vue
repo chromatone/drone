@@ -1,13 +1,14 @@
 <script setup>
-import { useVoice } from './useDrone'
+import { useDrone } from '../composables/useDrone'
+import { useVoice } from '../composables/useVoice'
 import { ref } from 'vue'
 import { useGesture } from '@vueuse/gesture';
 
 const props = defineProps({
-  interval: { type: Number, default: 0, },
+  interval: { type: Number, default: 0 },
 });
 
-const voice = useVoice(props.interval)
+const voice = useVoice(props.interval);
 
 function vol(drag, delta) {
   if (drag.tap) {
