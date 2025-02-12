@@ -132,6 +132,19 @@ useGesture({
             :step="0.05" 
             :fixed="1" 
             param="Q")
+        .flex.gap-2.border-2.rounded-2xl.items-center.p-1
+          control-rotary.w-4em(
+            v-model="drone.autoFilterFrequency" 
+            :min="0.1" 
+            :max="10" 
+            :step="0.1" 
+            param="AF Freq")
+          control-rotary.w-4em(
+            v-model="drone.autoFilterDepth" 
+            :min="0" 
+            :max="1" 
+            :step="0.05" 
+            param="AF Depth")
 
 </template>
 

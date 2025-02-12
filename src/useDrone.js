@@ -1,5 +1,5 @@
 import { freqPitch, pitchFreq, pitchColor } from "./calculations";
-import { Frequency, Synth, PanVol, gainToDb, LFO, Meter, Filter, Gain } from "tone";
+import { Frequency, Synth, PanVol, gainToDb, LFO, Meter, Filter, Gain, AutoFilter } from "tone";
 import { useRafFn, onKeyStroke } from "@vueuse/core";
 import { reactive, computed, shallowReactive, onBeforeUnmount, watch } from 'vue'
 import { useClamp } from "@vueuse/math";
@@ -13,6 +13,8 @@ const drone = reactive({
   filterFreq: useStorage("drone-filter-freq", 1000),
   filterQ: useStorage("drone-filter-q", 1),
   volume: useStorage("drone-vol", 0.5),
+  autoFilterFrequency: useStorage("drone-autoFilter-freq", 1),
+  autoFilterDepth: useStorage("drone-autoFilter-depth", 1),
   note: computed(() => Frequency(drone.freq).toNote()),
   pitch: computed({
     get() {
@@ -34,6 +36,10 @@ const audio = shallowReactive({
 function initAudio() {
   audio.gain = new Gain(drone.volume).toDestination()
   audio.filter = new Filter(drone.filterFreq).connect(audio.gain)
+  audio.autoFilter = new AutoFilter({
+    frequency: drone.autoFilterFrequency,
+    depth: drone.autoFilterDepth,
+  }).connect(audio.filter).start();
 }
 
 export function useDrone() {
@@ -64,6 +70,20 @@ export function useDrone() {
       () => drone.filterQ,
       (q) => {
         audio.filter.Q.targetRampTo(q, 0.1);
+      }
+    );
+
+    watch(
+      () => drone.autoFilterFrequency,
+      (freq) => {
+        audio.autoFilter.frequency.value = freq;
+      }
+    );
+
+    watch(
+      () => drone.autoFilterDepth,
+      (depth) => {
+        audio.autoFilter.depth.value = depth;
       }
     );
 
@@ -137,7 +157,7 @@ export function useVoice(interval) {
 
     va.panner = new PanVol({
       volume: gainToDb(drone.volume),
-    }).connect(audio.filter);
+    }).connect(audio.autoFilter);
 
     va.lfo = new LFO(Math.random() * 0.5 + 0.01, -0.25, 0.25)
       .connect(va.panner.pan)
