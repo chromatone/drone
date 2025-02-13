@@ -1,4 +1,4 @@
-const CACHE_NAME = 'drone-cache-v1';
+const CACHE_NAME = 'drone-v.0.0.5';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

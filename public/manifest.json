@@ -44,10 +44,16 @@
 	],
 	"screenshots": [
 		{
-			"src": "./screen.png",
+			"src": "./horizontal.png",
 			"type": "image/png",
-			"sizes": "1280x1280",
+			"sizes": "1280x720",
 			"form_factor": "wide"
+		},
+		{
+			"src": "./vertical.png",
+			"type": "image/png",
+			"sizes": "720x1280",
+			"form_factor": "narrow"
 		}
 	],
 	"launch_handler": {
