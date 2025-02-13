@@ -90,7 +90,7 @@ const len = Math.PI * 2 * r - 50;
 
 <style lang="postcss" scoped>
 .knob {
-  @apply p-1 flex flex-col items-center cursor-grab active-cursor-grabbing min-w-16 rounded-lg max-w-18 text-center border-dark-100/50 dark-(border-light-100/50) cursor-pointer select-none relative overflow-hidden relative;
+  @apply flex flex-col items-center cursor-grab active-cursor-grabbing rounded-lg text-center border-dark-100/50 dark-(border-light-100/50) cursor-pointer select-none relative overflow-hidden relative;
   touch-action: none;
 }
 

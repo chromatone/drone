@@ -51,7 +51,9 @@ useGesture({
   .pan.absolute.left-0.top-0.bottom-0.border-r-2(
     :style="{ width: voice.pan * 50 + 50 + '%', opacity: voice.play ? 1 : 0.2 }"
   )
-  .text-2xl.z-100 {{ voice.note }}
+  .text-2xl.z-100(
+    :style="{ opacity: voice.play ? 1 : 0.6 }"
+  ) {{ voice.note }}
 </template>
 
 <style lang="postcss" scoped></style>

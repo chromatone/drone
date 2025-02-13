@@ -7,14 +7,14 @@ import { useStorage } from "@vueuse/core";
 
 export const drone = reactive({
   base: 55,
-  freq: useClamp(useStorage("drone-freq", 110), 27.5, 220),
+  freq: useClamp(useStorage("drone-freq", 110), 27.5, 440),
   started: false,
   stopped: true,
   filterFreq: useStorage("drone-filter-freq", 1000),
   filterQ: useStorage("drone-filter-q", 1),
   volume: useStorage("drone-vol", 0.5),
   autoFilterFrequency: useStorage("drone-autoFilter-freq", 1),
-  autoFilterDepth: useStorage("drone-autoFilter-depth", 1),
+  autoFilterDepth: useStorage("drone-autoFilter-depth", 0.1),
   note: computed(() => Frequency(drone.freq).toNote()),
   pitch: computed({
     get() {
