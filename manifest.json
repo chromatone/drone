@@ -1,11 +1,11 @@
 {
-	"id": "drone-v.0.0.1",
+	"id": "drone-app",
 	"name": "Drone",
 	"short_name": "Drone",
 	"description": "Synth tanpura for music practice",
 	"start_url": "/",
-	"background_color": "#999",
-	"theme_color": "#999",
+	"background_color": "#000",
+	"theme_color": "#000",
 	"display": "standalone",
 	"orientation": "any",
 	"display_override": ["window-controls-overlay", "minimal-ui", "standalone"],
@@ -44,10 +44,16 @@
 	],
 	"screenshots": [
 		{
-			"src": "./screen.png",
+			"src": "./horizontal.png",
 			"type": "image/png",
-			"sizes": "1280x1280",
+			"sizes": "1280x720",
 			"form_factor": "wide"
+		},
+		{
+			"src": "./vertical.png",
+			"type": "image/png",
+			"sizes": "720x1280",
+			"form_factor": "narrow"
 		}
 	],
 	"launch_handler": {
