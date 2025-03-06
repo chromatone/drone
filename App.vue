@@ -1,11 +1,11 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useGesture } from '@vueuse/gesture'
-import { pitchColor } from "../composables/calculations"
-import { useDrone } from "../composables/useDrone"
-import OverlaySplash from './OverlaySplash.vue'
-import PitchDroneVoice from './PitchDroneVoice.vue'
-import ControlRotary from './ControlRotary.vue'
+import { pitchColor } from "./composables/calculations"
+import { useDrone } from "./composables/useDrone"
+import OverlaySplash from './components/OverlaySplash.vue'
+import PitchDroneVoice from './components/PitchDroneVoice.vue'
+import ControlRotary from './components/ControlRotary.vue'
 
 const notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
 
