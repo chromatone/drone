@@ -32,7 +32,8 @@ useGesture({
   :style="{ borderColor: voice.play ? voice.color : '#3333' }"
 )
   .grid-2x2
-    XYPad(
+    XYPad.border-1.rounded-lg(
+      :style="{ borderColor: voice.play ? voice.color : '#3333' }"
       v-model:x="voice.pan"
       v-model:y="voice.vol"
       :xMin="-1" :xMax="1"
@@ -42,33 +43,36 @@ useGesture({
       :color="voice.color"
       :active="voice.play"
     )
-    XYPad(
-      v-model:x="voice.filterQ"
-      v-model:y="voice.filterFreq"
-      :xMin="0" :xMax="20"
-      :yMin="100" :yMax="16000"
-      :yLog="true"
-      xLabel="Q" yLabel="LP"
+    XYPad.border-1.rounded-lg(
+      :style="{ borderColor: voice.play ? voice.color : '#3333' }"
+      v-model:x="voice.filterFreq"
+      v-model:y="voice.filterQ"
+      :xMin="100" :xMax="16000"
+      :xLog="true"
+      :yMin="0" :yMax="20"
+      xLabel="LP" yLabel="Q"
       :color="voice.color"
       :active="voice.play"
     )
-    XYPad(
-      v-model:x="voice.afDepth"
-      v-model:y="voice.afFreq"
-      :xMin="0" :xMax="1"
-      :yMin="0.1" :yMax="10"
-      :yLog="true"
-      xLabel="DEPTH" yLabel="AF"
+    XYPad.border-1.rounded-lg(
+      :style="{ borderColor: voice.play ? voice.color : '#3333' }"
+      v-model:x="voice.afFreq"
+      v-model:y="voice.afDepth"
+      :xMin="0.1" :xMax="10"
+      :xLog="true"
+      :yMin="0" :yMax="1"
+      xLabel="AF" yLabel="DEPTH"
       :color="voice.color"
       :active="voice.play"
     )
-    XYPad(
-      v-model:x="voice.chorusDepth"
-      v-model:y="voice.chorusRate"
-      :xMin="0" :xMax="1"
-      :yMin="0.1" :yMax="10"
-      :yLog="true"
-      xLabel="DEPTH" yLabel="CHO"
+    XYPad.border-1.rounded-lg(
+      :style="{ borderColor: voice.play ? voice.color : '#3333' }"
+      v-model:x="voice.chorusRate"
+      v-model:y="voice.chorusDepth"
+      :xMin="0.1" :xMax="10"
+      :xLog="true"
+      :yMin="0" :yMax="1"
+      xLabel="CHO" yLabel="DEPTH"
       :color="voice.color"
       :active="voice.play"
     )
@@ -80,19 +84,19 @@ useGesture({
   )
 </template>
 
-<style lang="postcss" scoped>
+<style scoped>
 .voice-cell {
-  @apply relative rounded-xl border-4 touch-none cursor-pointer select-none flex items-stretch;
+  @apply p-2px relative rounded-xl border-4 touch-none cursor-pointer select-none flex items-stretch;
   overflow: visible;
   flex: 1;
 }
 
 .grid-2x2 {
-  @apply grid w-full h-full rounded-lg;
+  @apply grid w-full h-full;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 3px;
-  background-color: #ffffff12;
+  gap: 0.25em;
+  /* background-color: #ffffff12; */
 }
 
 .grid-2x2>* {

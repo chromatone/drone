@@ -10,7 +10,7 @@ const emit = defineEmits(['start', 'close'])
   .absolute.top-2.left-2.right-2.bottom-2.rounded-2rem.p-4.bg-dark-900.bg-op-40.backdrop-blur-md.flex.flex-col.gap-4.z-10000.overflow-y-scroll.overscroll-none.shadow-xl.text-light-400
     .flex.flex-wrap.gap-4.sticky.top-0.bg-dark-100.rounded-2xl.p-4.bg-op-80.backdrop-blur-md.z-100.items-end
       .flex.flex-col.gap-4(style="flex: 1 1 300px")
-        a.flex.items-center.no-underline.gap-2(href="https://chromatone.center/" target="_blank")
+        .flex.items-center.no-underline.gap-2
           img.w-8(src="/logo.svg" alt="Chromatone logo")
           .text-xl.font-bold Chromatone
           
@@ -71,7 +71,7 @@ const emit = defineEmits(['start', 'close'])
           li To adjust the amount of high-frequency content, use the <b>LP</b> slider - it sets the frequency of the global low-pass filter. <b>Q</b> is the resonance of the filter.
           li Press the <img src="/logo.svg" alt="Chromatone logo" class="w-4 inline-block" /> button or use the <b>spacebar</b> keyboard key to toggle mute for all voices together.
 
-    .gap-2.flex.items-center.gap-2.z-100.bg-dark-400.p-4.rounded-xl.shadow-xl
+    .gap-2.flex.items-center.gap-2.z-100.bg-dark-400.p-4.rounded-xl.shadow-xl.sticky.bottom-2
       .i-la-copyright
       a.op-50.hover-op-100.transition.no-underline.flex.items-center.gap-1(href="https://github.com/davay42" target="_blank") davay42
       p |
