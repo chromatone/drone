@@ -75,7 +75,7 @@ const emit = defineEmits(['start', 'close'])
       .i-la-copyright
       a.op-50.hover-op-100.transition.no-underline.flex.items-center.gap-1(href="https://github.com/davay42" target="_blank") davay42
       p |
-      a.op-50.hover-op-100.transition.no-underline.flex.items-center.gap-1(href="https://github.com/chromatone" target="_blank") Chromatone
+      a.op-50.hover-op-100.transition.no-underline.flex.items-center.gap-1(href="https://chromatone.center/" target="_blank") Chromatone
       .flex-1
       .p-0  2026 MIT
       a.op-50.hover-op-100.transition.no-underline.flex.items-center.gap-1(href="https://github.com/chromatone/drone" target="_blank")

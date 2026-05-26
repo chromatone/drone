@@ -79,7 +79,9 @@ function handleStart() {
 
       button.w-16.p-2.border-2.rounded-2xl.text-xl.op-50.hover-op-100.transition(@click="drone.pitch++" :style="{ backgroundColor: pitchColor(drone.pitch + 1, 3, 1, 0.4) }") {{ notes[(drone.pitch + 1) % 12] }}
 
-      .flex.flex-col.gap-2.justify-between
+      .flex.flex-col.gap-2.justify-between.items-center
+        button.w-12.p-2.text-2xl.border-2.rounded-2xl.text-2xl(@click="drone.stopped = true; info = true")
+          img.w-8.op-75.hover-op-100.transition(src="/logo.svg" alt="Chromatone logo")
         control-rotary.w-14(
           :class="{ 'op-50': drone.stopped }"
           v-model="drone.volume"
@@ -87,8 +89,6 @@ function handleStart() {
           param="VOL"
 
         )
-        button.w-12.p-2.text-2xl.border-2.rounded-2xl.text-2xl(@click="drone.stopped = true; info = true")
-          img.w-8.op-75.hover-op-100.transition(src="/logo.svg" alt="Chromatone logo")
 
     .flex-1.flex.flex-col.gap-2
       .flex.flex-col.flex-1.gap-1(
