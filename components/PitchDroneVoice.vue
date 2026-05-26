@@ -1,59 +1,109 @@
 <script setup>
-import { useDrone } from '../composables/useDrone'
 import { useVoice } from '../composables/useVoice'
 import { ref } from 'vue'
-import { useGesture } from '@vueuse/gesture';
+import { useGesture } from '@vueuse/gesture'
+import XYPad from './XYPad.vue'
 
 const props = defineProps({
   interval: { type: Number, default: 0 },
-});
+})
 
-const voice = useVoice(props.interval);
+const voice = useVoice(props.interval)
 
-function vol(drag, delta) {
-  if (drag.tap) {
-    voice.play = !voice.play
-    voice.active = voice.play
-  }
-  voice.vol -= delta[1] / 400
-  voice.pan += delta[0] / 100
-}
-
-const control = ref()
+const cell = ref()
 
 useGesture({
   onDrag(ev) {
     ev?.event?.preventDefault()
-    vol(ev, ev.delta)
+    if (ev.tap) {
+      voice.play = !voice.play
+      voice.active = voice.play
+    }
   },
-  onWheel(ev) {
-    ev?.event?.preventDefault()
-    vol(ev, ev.velocities.map(v => -v))
-  }
 }, {
-  domTarget: control,
-  eventOptions: { passive: false }
+  domTarget: cell,
+  eventOptions: { passive: false },
 })
-
 </script>
 
 <template lang="pug">
-.relative.cursor-pointer.rounded-xl.overflow-hidden.text-center.font-bold.border-6.touch-none.flex.items-center.justify-center(
-  ref="control"
+.voice-cell(
+  ref="cell"
   :style="{ borderColor: voice.play ? voice.color : '#3333' }"
-) 
-  .vol.absolute.left-0.right-0.bottom-0.bg-dark-100.bg-opacity-30.border-t-4(
-    :style="{ borderColor: voice.color, height: voice.vol * 100 + '%', opacity: voice.play ? 1 : 0.2 }"
+)
+  .grid-2x2
+    XYPad(
+      v-model:x="voice.pan"
+      v-model:y="voice.vol"
+      :xMin="-1" :xMax="1"
+      :yMin="0.01" :yMax="1"
+      :yLog="true"
+      xLabel="PAN" yLabel="VOL"
+      :color="voice.color"
+      :active="voice.play"
+    )
+    XYPad(
+      v-model:x="voice.filterQ"
+      v-model:y="voice.filterFreq"
+      :xMin="0" :xMax="20"
+      :yMin="100" :yMax="16000"
+      :yLog="true"
+      xLabel="Q" yLabel="LP"
+      :color="voice.color"
+      :active="voice.play"
+    )
+    XYPad(
+      v-model:x="voice.afDepth"
+      v-model:y="voice.afFreq"
+      :xMin="0" :xMax="1"
+      :yMin="0.1" :yMax="10"
+      :yLog="true"
+      xLabel="DEPTH" yLabel="AF"
+      :color="voice.color"
+      :active="voice.play"
+    )
+    XYPad(
+      v-model:x="voice.chorusDepth"
+      v-model:y="voice.chorusRate"
+      :xMin="0" :xMax="1"
+      :yMin="0.1" :yMax="10"
+      :yLog="true"
+      xLabel="DEPTH" yLabel="CHO"
+      :color="voice.color"
+      :active="voice.play"
+    )
+
+  .note-label(:style="{ opacity: voice.play ? 0.9 : 0.35, color: voice.color }") {{ voice.note }}
+
+  .lfo-bar(
+    :style="{ height: voice.vol * 100 * voice.lfo + '%', backgroundColor: voice.color, opacity: voice.play ? 0.25 : 0 }"
   )
-  .vol.absolute.left-0.right-0.bottom-0.bg-dark-900.bg-opacity-20.border-t-1(
-    :style="{ height: voice.vol * 100 * voice.lfo + '%', opacity: voice.play ? 1 : 0.2, backgroundColor: voice.color }"
-  )
-  .pan.absolute.left-0.top-0.bottom-0.border-r-2(
-    :style="{ width: voice.pan * 50 + 50 + '%', opacity: voice.play ? 1 : 0.2 }"
-  )
-  .text-2xl.z-100(
-    :style="{ opacity: voice.play ? 1 : 0.6 }"
-  ) {{ voice.note }}
 </template>
 
-<style lang="postcss" scoped></style>
+<style lang="postcss" scoped>
+.voice-cell {
+  @apply relative rounded-xl border-4 touch-none cursor-pointer select-none flex items-stretch;
+  overflow: visible;
+  flex: 1;
+}
+
+.grid-2x2 {
+  @apply grid w-full h-full rounded-lg;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 3px;
+  background-color: #ffffff12;
+}
+
+.grid-2x2>* {
+  @apply bg-dark-900/40 overflow-visible;
+}
+
+.note-label {
+  @apply absolute inset-0 flex items-center justify-center text-2xl font-bold pointer-events-none z-10;
+}
+
+.lfo-bar {
+  @apply absolute left-0 right-0 bottom-0 pointer-events-none transition-none;
+}
+</style>

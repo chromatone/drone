@@ -1,7 +1,7 @@
 import { freqPitch, pitchFreq, pitchColor } from "./calculations";
-import { Frequency, Synth, PanVol, gainToDb, LFO, Meter, Gain, AutoFilter } from "tone";
+import { Frequency, Gain } from "tone";
 import { useRafFn, onKeyStroke } from "@vueuse/core";
-import { reactive, computed, shallowReactive, onBeforeUnmount, watch } from 'vue'
+import { reactive, computed, shallowReactive, watch } from 'vue'
 import { useClamp } from "@vueuse/math";
 import { useStorage } from "@vueuse/core";
 
@@ -40,11 +40,7 @@ export const drone = reactive({
   freq: useClamp(useStorage("drone-freq", 110), 27.5, 440),
   started: false,
   stopped: true,
-  filterFreq: useStorage("drone-filter-freq", 1000),
-  filterQ: useStorage("drone-filter-q", 1),
   volume: useStorage("drone-vol", 0.5),
-  autoFilterFrequency: useStorage("drone-autoFilter-freq", 1),
-  autoFilterDepth: useStorage("drone-autoFilter-depth", 0.1),
   note: computed(() => Frequency(drone.freq).toNote()),
   pitch: computed({
     get() {
@@ -65,12 +61,6 @@ export const audio = shallowReactive({
 
 export function initAudio() {
   audio.gain = new Gain(drone.volume).toDestination()
-  audio.autoFilter = new AutoFilter({
-    frequency: drone.autoFilterFrequency,
-    depth: drone.autoFilterDepth,
-    baseFrequency: drone.filterFreq,
-  }).connect(audio.gain).start();
-  audio.autoFilter.filter.Q.value = drone.filterQ;
 }
 
 export function useDrone() {
@@ -87,33 +77,6 @@ export function useDrone() {
       () => drone.volume,
       (vol) => {
         audio.gain.gain.targetRampTo(vol, 1);
-      }
-    );
-    watch(
-      () => drone.filterFreq,
-      (freq) => {
-        audio.autoFilter.baseFrequency = freq;
-      }
-    );
-
-    watch(
-      () => drone.filterQ,
-      (q) => {
-        audio.autoFilter.filter.Q.targetRampTo(q, 0.1);
-      }
-    );
-
-    watch(
-      () => drone.autoFilterFrequency,
-      (freq) => {
-        audio.autoFilter.frequency.value = freq;
-      }
-    );
-
-    watch(
-      () => drone.autoFilterDepth,
-      (depth) => {
-        audio.autoFilter.depth.value = depth;
       }
     );
 

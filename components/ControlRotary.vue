@@ -10,20 +10,31 @@ const props = defineProps({
   param: { type: String, default: "param" },
   unit: { type: String, default: "" },
   fixed: { type: Number, default: 1 },
+  log: { type: Boolean, default: false },
   cc: { type: Number, default: 0 },
   channel: { type: Number, default: 0 },
 });
 
 const model = defineModel({ default: 50 });
 
+function normToVal(norm, min, max, log) {
+  if (log) return min * Math.pow(max / min, norm)
+  return min + norm * (max - min)
+}
+
+function valToNorm(val, min, max, log) {
+  if (log) return Math.log(val / min) / Math.log(max / min)
+  return (val - min) / (max - min)
+}
+
 const state = reactive({
   internal: useClamp(0, 0, 100),
-  initial: computed(() => ((model.value - props.min) / (props.max - props.min)) * 100)
+  initial: computed(() => valToNorm(model.value, props.min, props.max, props.log) * 100)
 });
 
 const external = computed({
-  get: () => Math.round(((state.internal / 100) * (props.max - props.min) + props.min) / props.step) * props.step,
-  set: (val) => { state.internal = ((val - props.min) / (props.max - props.min)) * 100; }
+  get: () => Math.round(normToVal(state.internal / 100, props.min, props.max, props.log) / props.step) * props.step,
+  set: (val) => { state.internal = valToNorm(val, props.min, props.max, props.log) * 100; }
 });
 
 watch(model, (newValue) => { external.value = newValue; }, { immediate: true });

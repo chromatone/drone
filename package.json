@@ -2,8 +2,8 @@
 	"name": "chromatone-drone",
 	"description": "Drone sound generator",
 	"private": true,
-	"version": "0.0.5",
-	"year": 2024,
+	"version": "0.1.0",
+	"year": 2026,
 	"homepage": "https://drone.chromatone.center",
 	"repository": {
 		"type": "git",

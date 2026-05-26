@@ -6,6 +6,7 @@ import { useDrone } from "./composables/useDrone"
 import OverlaySplash from './components/OverlaySplash.vue'
 import PitchDroneVoice from './components/PitchDroneVoice.vue'
 import ControlRotary from './components/ControlRotary.vue'
+import { useClamp } from '@vueuse/math'
 
 const notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
 
@@ -64,6 +65,8 @@ function handleStart() {
   .flex-1.justify-between.flex.flex-col.px-2.pt-3.gap-4.text-white
 
     .flex.flex.justify-stretch.items-stretch.gap-2
+      button.w-16.p-2.border-2.rounded-2xl.text-xl.op-50.hover-op-100.transition(@click="drone.pitch--" :style="{ backgroundColor: pitchColor(drone.pitch - 1, 3, 1, 0.4) }") {{ notes[(drone.pitch - 1 < 0 ? 11 : drone.pitch - 1) % 12] }}
+
       .flex.gap-2.border-2.flex-wrap.p-4.flex-1.min-w-10em.items-center.rounded-2xl.text-white.p-2.cursor-pointer.transition-all.duration-1500.ease-out.cursor-grab.relative(
         style="flex: 1 1 400px"
         ref="pitchControl"
@@ -74,27 +77,18 @@ function handleStart() {
             .p-0 {{ drone.centDiff }}%
             .p-0 {{ drone.freq.toFixed(2) }} Hz
 
-      .flex.flex-col.gap-2.justify-between
-        button.p-2.border-2.rounded-2xl.text-xl.op-50.hover-op-100.transition(@click="drone.pitch++" :style="{ backgroundColor: pitchColor(drone.pitch + 1, 3, 1, 0.4) }") {{ notes[(drone.pitch + 1) % 12] }}
-        button.p-2.border-2.rounded-2xl.text-xl.op-50.hover-op-100.transition(@click="drone.pitch--" :style="{ backgroundColor: pitchColor(drone.pitch - 1, 3, 1, 0.4) }") {{ notes[(drone.pitch - 1 < 0 ? 11 : drone.pitch - 1) % 12] }}
+      button.w-16.p-2.border-2.rounded-2xl.text-xl.op-50.hover-op-100.transition(@click="drone.pitch++" :style="{ backgroundColor: pitchColor(drone.pitch + 1, 3, 1, 0.4) }") {{ notes[(drone.pitch + 1) % 12] }}
 
       .flex.flex-col.gap-2.justify-between
-        button.p-2.border-2.rounded-2xl.text-2xl.text-white(@click="drone.stopped = !drone.stopped")
-          .i-la-stop(v-if="!drone.stopped")
-          .i-la-play(v-else)
-        button.p-2.text-2xl.border-2.rounded-2xl.text-2xl(@click="info = true")
-          .i-la-info-circle
+        control-rotary.w-14(
+          :class="{ 'op-50': drone.stopped }"
+          v-model="drone.volume"
+          :min="0.001" :max="1" :step="0.01" :fixed="2"
+          param="VOL"
 
-    //- .w-full.font-bold.text-center.flex.flex-wrap.gap-1
-      .p-2.cursor-pointer.rounded-xl.text-white.border-2.border-op-10.border-light-100.transition.duration-700(
-        v-for="(note, pitch) in notes" 
-        style="flex: 1 1 7%"
-        :key="note"
-        :class="{ 'border-light-400 border-op-100': drone.pitch == pitch }"
-        :style="{ backgroundColor: pitchColor(pitch, 3, drone.pitch == pitch ? 1 : 0.2, drone.pitch == pitch ? 1 : 0.4) }"
-        @click="drone.pitch = pitch"
-      ) {{ note }}
-
+        )
+        button.w-12.p-2.text-2xl.border-2.rounded-2xl.text-2xl(@click="drone.stopped = true; info = true")
+          img.w-8.op-75.hover-op-100.transition(src="/logo.svg" alt="Chromatone logo")
 
     .flex-1.flex.flex-col.gap-2
       .flex.flex-col.flex-1.gap-1(
@@ -108,45 +102,6 @@ function handleStart() {
             :interval="voice"
             )
 
-      .controls.min-w-10em.my-2.p-2.flex.flex-wrap.items-center.justify-center.is-group.gap-2.text-white(
-        style="flex: 0 1"
-        )
-        .flex.gap-2.rounded-2xl.items-center
-          control-rotary.w-4em(
-            v-model="drone.volume" 
-            :min="0" 
-            :max="1" 
-            :step="0.05" 
-            param="VOL")
-
-          control-rotary.w-4em(
-            v-model="drone.filterFreq" 
-            :min="55" 
-            :max="12000" 
-            :step="0.05" 
-            :fixed="0" 
-            param="LP")
-          control-rotary.w-4em(
-            v-model="drone.filterQ" 
-            :min="0" 
-            :max="40" 
-            :step="0.05" 
-            :fixed="1" 
-            param="Q")
-        .flex.gap-2.rounded-2xl.items-center
-          control-rotary.w-4em(
-            v-model="drone.autoFilterFrequency" 
-            :min="0.01" 
-            :max="2" 
-            :fixed="2"
-            :step="0.01" 
-            param="AF Freq")
-          control-rotary.w-4em(
-            v-model="drone.autoFilterDepth" 
-            :min="0" 
-            :max="1" 
-            :step="0.05" 
-            param="AF Depth")
 
 </template>
 

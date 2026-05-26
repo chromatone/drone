@@ -13,6 +13,7 @@ const emit = defineEmits(['start', 'close'])
         a.flex.items-center.no-underline.gap-2(href="https://chromatone.center/" target="_blank")
           img.w-8(src="/logo.svg" alt="Chromatone logo")
           .text-xl.font-bold Chromatone
+          
         .flex.items-baseline.gap-2
           .text-6xl Drone
         .text-xl.max-w-32ch Rich harmonic soundscape synthesizer for music practice, chanting and meditation
@@ -68,15 +69,15 @@ const emit = defineEmits(['start', 'close'])
           li Drag each pad horizontally to set the middle point for the slowly moving panning of the voice.
           li Listen to the tone as it evolves and breathes with harmonics. Try singing to it, tuning your instruments, or just feeling the vibrations.
           li To adjust the amount of high-frequency content, use the <b>LP</b> slider - it sets the frequency of the global low-pass filter. <b>Q</b> is the resonance of the filter.
-          li Press the <i class="i-la-play inline-block" />/<i class="i-la-stop inline-block" /> button or use the <b>spacebar</b> keyboard key to toggle mute for all voices together.
+          li Press the <img src="/logo.svg" alt="Chromatone logo" class="w-4 inline-block" /> button or use the <b>spacebar</b> keyboard key to toggle mute for all voices together.
 
-    .gap-2.flex.items-center.gap-2.max-w-75ch.z-100.bg-dark-400.p-4.rounded-xl.shadow-xl
+    .gap-2.flex.items-center.gap-2.z-100.bg-dark-400.p-4.rounded-xl.shadow-xl
       .i-la-copyright
       a.op-50.hover-op-100.transition.no-underline.flex.items-center.gap-1(href="https://github.com/davay42" target="_blank") davay42
       p |
       a.op-50.hover-op-100.transition.no-underline.flex.items-center.gap-1(href="https://github.com/chromatone" target="_blank") Chromatone
       .flex-1
-      .p-0  2025 MIT
+      .p-0  2026 MIT
       a.op-50.hover-op-100.transition.no-underline.flex.items-center.gap-1(href="https://github.com/chromatone/drone" target="_blank")
         .i-la-github
         span  v.{{ version }} 
