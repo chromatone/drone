@@ -28,9 +28,25 @@ const emit = defineEmits(['start', 'close'])
 
     .flex.flex-wrap.gap-2
 
+
+      .gap-2.flex.flex-col.gap-2.max-w-75ch.z-100.bg-dark-400.p-4.rounded-xl.shadow-xl(style="flex: 1 1 300px") 
+
+      
+        .text-xl.font-bold.py-2 How to use the app:
+        ol.flex.flex-col.gap-2.list-decimal.list-inside
+          li Swipe top section to choose root pitch
+          li Tap any voice cell to toggle it on
+          li Each voice has 4 quadrants — drag to shape sound:
+            ul.list-disc.list-inside.ml-4.mt-1
+              li <b>VOL/PAN</b> — volume & stereo
+              li <b>LP/Q</b> — filter brightness & resonance
+              li <b>AF</b> — auto-filter rate & depth
+              li <b>CHO</b> — chorus depth
+          li Master volume knob in top bar
+          li Spacebar toggles all voices
+
       .gap-2.flex.flex-col.gap-2.max-w-75ch.z-100.bg-dark-400.p-4.rounded-xl.shadow-xl.sticky.top-0(style="flex: 1 1 300px")
-        .text-xl.font-bold.py-2 Install this web-app for offline use!
-        p This app is a PWA - Progressive Web-Application that can be installed and performs just like a regular app on your mobile or desktop platform.
+        .text-xl.font-bold.py-2 Install this web-app for offline use:
         .flex.flex-col.gap-4
           .p-0
             i.i-la-apple.inline-block.text-lg
@@ -58,18 +74,7 @@ const emit = defineEmits(['start', 'close'])
             |  (three dots), then select "Apps" > "Install this site as an app".
 
       
-      .gap-2.flex.flex-col.gap-2.max-w-75ch.z-100.bg-dark-400.p-4.rounded-xl.shadow-xl(style="flex: 1 1 300px") 
 
-      
-        .text-xl.font-bold.py-2 How to use it?
-        ol.flex.flex-col.gap-2.list-decimal.list-inside
-          li Choose the root note – the movable <b>Do/Sa</b> note of the performance – either by clicking one in the notes list or by swiping the current note section with your mouse or touch. You can use it to adjust and fine-tune the exact frequency you need. This section shows the note as well as the cents difference with the pure 12-TET tone and with the A2 note. It also displays the exact frequency in Hz.
-          li Next, tap the note rectangles to turn the sound on. The bottom row holds the root note in 3 lower octaves to create a deep base for the sound. The top row consists of three pads of the higher fifth intervals of that base frequency.
-          li Drag each of the pads up and down to set the maximum level of that note. Each note has a random speed LFO that modulates its volume from 0 to this upper limit. Reload the page to get a new LFO speed composition.
-          li Drag each pad horizontally to set the middle point for the slowly moving panning of the voice.
-          li Listen to the tone as it evolves and breathes with harmonics. Try singing to it, tuning your instruments, or just feeling the vibrations.
-          li To adjust the amount of high-frequency content, use the <b>LP</b> slider - it sets the frequency of the global low-pass filter. <b>Q</b> is the resonance of the filter.
-          li Press the <img src="/logo.svg" alt="Chromatone logo" class="w-4 inline-block" /> button or use the <b>spacebar</b> keyboard key to toggle mute for all voices together.
 
     .gap-2.flex.items-center.gap-2.z-100.bg-dark-400.p-4.rounded-xl.shadow-xl.sticky.bottom-2
       .i-la-copyright

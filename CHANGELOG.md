@@ -1,3 +1,22 @@
+## v0.1.0 (2026-05-26)
+
+### Major redesign:
+
+- 4-quadrant XY control grid per voice — VOL/PAN, LP/Q, AF rate/depth, Chorus rate/depth
+- Per-voice filter, autoFilter, and chorus effects — each voice fully independent
+- Logarithmic scale mapping for frequency and volume axes in XYPad and ControlRotary
+- Removed global rotary controls — only master volume remains in top bar
+- Fixed panning LFO to oscillate around user-set pan value via additive AudioParam
+- Fixed chorus stereo spread (spread: 180) and wet/dry toggle logic
+- UI improvements: 3px gap between sub-cells, dot overflow visible, center note label inert
+- Updated documentation (README, OverlaySplash, bible.md)
+
+### Bugs fixed:
+
+- Pan LFO now correctly modulates around user-set pan value
+- Chorus no longer collapses stereo when depth is 0
+- Log scale requires min > 0 — enforced in ControlRotary and XYPad
+
 ## v0.0.4 (2024-11-17)
 
 ### New feature:
