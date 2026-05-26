@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - "v*"
-    branches:
-      - release
   workflow_dispatch:
   repository_dispatch:
     types:
@@ -25,8 +23,6 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v4
-        with:
-          node-version: 20
 
       - uses: pnpm/action-setup@v4
         with:
