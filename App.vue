@@ -69,20 +69,23 @@ function handleStart() {
         ref="pitchControl"
         :style="{ backgroundColor: drone.color }")
         .flex.w-full.items-center.gap-2
-          .p-1.text-6xl.font-bold {{ drone.note }} 
+          .p-1.text-5xl.font-bold {{ drone.note }} 
           .flex.flex-col.text-md
             .p-0 {{ drone.centDiff }}%
             .p-0 {{ drone.freq.toFixed(2) }} Hz
-        .flex-1
 
-      button.p-2.text-2xl.border-2.rounded-2xl.text-3xl(@click="info = true")
-        .i-la-info-circle
+      .flex.flex-col.gap-2.justify-between
+        button.p-2.border-2.rounded-2xl.text-xl.op-50.hover-op-100.transition(@click="drone.pitch++" :style="{ backgroundColor: pitchColor(drone.pitch + 1, 3, 1, 0.4) }") {{ notes[(drone.pitch + 1) % 12] }}
+        button.p-2.border-2.rounded-2xl.text-xl.op-50.hover-op-100.transition(@click="drone.pitch--" :style="{ backgroundColor: pitchColor(drone.pitch - 1, 3, 1, 0.4) }") {{ notes[(drone.pitch - 1 < 0 ? 11 : drone.pitch - 1) % 12] }}
 
-      button.p-2.border-2.rounded-2xl.text-3xl.text-white(@click="drone.stopped = !drone.stopped")
-        .i-la-stop(v-if="!drone.stopped")
-        .i-la-play(v-else)
+      .flex.flex-col.gap-2.justify-between
+        button.p-2.border-2.rounded-2xl.text-2xl.text-white(@click="drone.stopped = !drone.stopped")
+          .i-la-stop(v-if="!drone.stopped")
+          .i-la-play(v-else)
+        button.p-2.text-2xl.border-2.rounded-2xl.text-2xl(@click="info = true")
+          .i-la-info-circle
 
-    .w-full.font-bold.text-center.flex.flex-wrap.gap-1
+    //- .w-full.font-bold.text-center.flex.flex-wrap.gap-1
       .p-2.cursor-pointer.rounded-xl.text-white.border-2.border-op-10.border-light-100.transition.duration-700(
         v-for="(note, pitch) in notes" 
         style="flex: 1 1 7%"
