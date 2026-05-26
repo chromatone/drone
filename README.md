@@ -1,6 +1,6 @@
 # Chromatone Drone
 
-![Color drone app](https://raw.githubusercontent.com/chromatone/drone/refs/heads/main/public/screen.png)
+![Color drone app](https://raw.githubusercontent.com/chromatone/drone/refs/heads/main/public/horizontal.jpg)
 
 ## Rich harmonic soundscape synthesizer for music practice, chanting and meditation
 

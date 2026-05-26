@@ -1,8 +1,14 @@
-const CACHE_NAME = 'drone-v.0.0.5';
+const CACHE_NAME = 'drone-v0.1.0';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/logo.svg',
+  '/logo.png',
+  '/icon.png',
+  '/icon-m.png',
+  '/icon-s.png',
+  '/horizontal.png',
+  '/vertical.png',
 ];
 
 // Install Service Worker

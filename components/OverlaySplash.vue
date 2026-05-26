@@ -17,19 +17,20 @@ const emit = defineEmits(['start', 'close'])
         .flex.items-baseline.gap-2
           .text-6xl Drone
         .text-xl.max-w-32ch Rich harmonic soundscape synthesizer for music practice, chanting and meditation
-      .text-md.max-w-55ch(style="flex: 10 1 400px") Choose any pitch and listen to the rich sounds of 3 octaves, 3 fifths, and 3 fourths intervals related to it. The sounds are generated with a sawtooth oscillator synthesizer, which provides an incredible amount of harmonic material to work with. <br />Use this free progressive web app as an electronic 
+      .text-md.max-w-55ch(style="flex: 10 1 400px") Choose a root pitch and shape rich harmonic soundscapes with independent voices. Each voice has its own filter, auto-filter, and chorus effects — fully controllable via 4-quadrant XY pads. <br />Use this free progressive web app as an electronic 
         a(href="https://en.wikipedia.org/wiki/Tanpura" target="_blank") tanpura
-        |    or a 
+        |    or a digital 
         a(href="https://en.wikipedia.org/wiki/Shruti_box" target="_blank") shruti box
         |.
       button.absolute.right-4.top-4(@click="$emit('close')") 
         .i-la-times
-      button.shadow-lg.hover-bg-dark-100.p-4.border-2.bg-dark-200.text-light-200.rounded-xl.sticky.bottom-0.z-200.w-full(@click="$emit('start')") Start
+
+    button.shadow-lg.hover-bg-dark-100.p-4.border-2.bg-dark-200.text-light-200.rounded-xl.sticky.top-0.text-xl.z-200.w-full.uppercase(@click="handleStart") Start
 
     .flex.flex-wrap.gap-2
 
 
-      .gap-2.flex.flex-col.gap-2.max-w-75ch.z-100.bg-dark-400.p-4.rounded-xl.shadow-xl(style="flex: 1 1 300px") 
+      .sticky.top-18.gap-2.flex.flex-col.gap-2.max-w-75ch.z-100.bg-dark-400.p-4.rounded-xl.shadow-xl(style="flex: 1 1 300px") 
 
       
         .text-xl.font-bold.py-2 How to use the app:
