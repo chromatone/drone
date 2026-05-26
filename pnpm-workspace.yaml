@@ -1,0 +1,4 @@
+allowBuilds:
+  vue-demi: true
+minimumReleaseAgeExclude:
+  - '@vue/language-plugin-pug@3.3.2'

@@ -1,15 +1,15 @@
 import { Frequency, Synth, PanVol, gainToDb, LFO, Meter } from "tone";
-import { useRafFn } from "@vueuse/core";
 import { reactive, computed, shallowReactive, onBeforeUnmount, watch } from 'vue'
 import { useClamp } from "@vueuse/math";
 import { useStorage } from "@vueuse/core";
 import { pitchColor } from "./calculations";
-import { drone, audio, initAudio } from "./useDrone";  // <-- direct import
+import { drone, audio, initAudio, registerVoiceMeter, unregisterVoiceMeter } from "./useDrone";
 
 let voiceCount = 0;
 
 export function useVoice(interval) {
   const va = shallowReactive({});
+  const voiceId = { voice: null };
 
   const voice = reactive({
     play: false,
@@ -23,6 +23,7 @@ export function useVoice(interval) {
     panning: 0,
   });
 
+  voiceId.voice = voice;
   voiceCount += 2;
 
   watch(
@@ -107,13 +108,13 @@ export function useVoice(interval) {
         va.panner.pan.targetRampTo(pan, 1);
       }
     );
-    useRafFn(() => {
-      voice.lfo = va.meter.getValue();
-    });
+    // Register with centralized RAF system
+    registerVoiceMeter(voiceId, va.meter);
   }
 
   onBeforeUnmount(() => {
     if (va.synth) va.synth.triggerRelease();
+    unregisterVoiceMeter(voiceId);
   });
 
   return voice;

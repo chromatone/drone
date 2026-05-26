@@ -5,6 +5,36 @@ import { reactive, computed, shallowReactive, onBeforeUnmount, watch } from 'vue
 import { useClamp } from "@vueuse/math";
 import { useStorage } from "@vueuse/core";
 
+// Centralized RAF system for voice meter updates
+const voiceMeters = new Map();
+let rafCleanup = null;
+
+export function registerVoiceMeter(voiceId, meter) {
+  voiceMeters.set(voiceId, meter);
+  if (!rafCleanup) {
+    startRafLoop();
+  }
+}
+
+export function unregisterVoiceMeter(voiceId) {
+  voiceMeters.delete(voiceId);
+  if (voiceMeters.size === 0 && rafCleanup) {
+    rafCleanup();
+    rafCleanup = null;
+  }
+}
+
+function startRafLoop() {
+  rafCleanup = useRafFn(() => {
+    voiceMeters.forEach((meter, voiceId) => {
+      const voice = voiceId.voice;
+      if (voice && meter) {
+        voice.lfo = meter.getValue();
+      }
+    });
+  });
+}
+
 export const drone = reactive({
   base: 55,
   freq: useClamp(useStorage("drone-freq", 110), 27.5, 440),

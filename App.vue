@@ -133,9 +133,10 @@ function handleStart() {
         .flex.gap-2.rounded-2xl.items-center
           control-rotary.w-4em(
             v-model="drone.autoFilterFrequency" 
-            :min="0.1" 
-            :max="10" 
-            :step="0.1" 
+            :min="0.01" 
+            :max="2" 
+            :fixed="2"
+            :step="0.01" 
             param="AF Freq")
           control-rotary.w-4em(
             v-model="drone.autoFilterDepth" 
