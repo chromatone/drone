@@ -44,14 +44,14 @@
 	],
 	"screenshots": [
 		{
-			"src": "./horizontal.png",
-			"type": "image/png",
+			"src": "./horizontal.jpg",
+			"type": "image/jpeg",
 			"sizes": "1280x720",
 			"form_factor": "wide"
 		},
 		{
-			"src": "./vertical.png",
-			"type": "image/png",
+			"src": "./vertical.jpg",
+			"type": "image/jpeg",
 			"sizes": "720x1280",
 			"form_factor": "narrow"
 		}
