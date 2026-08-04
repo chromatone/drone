@@ -25,7 +25,7 @@ const emit = defineEmits(['start', 'close'])
       button.absolute.right-4.top-4(@click="$emit('close')") 
         .i-la-times
 
-    button.shadow-lg.hover-bg-dark-100.p-4.border-2.bg-dark-200.text-light-200.rounded-xl.sticky.top-0.text-xl.z-200.w-full.uppercase(@click="handleStart") Start
+    button.shadow-lg.hover-bg-dark-100.p-4.border-2.bg-dark-200.text-light-200.rounded-xl.sticky.top-0.text-xl.z-200.w-full.uppercase(@click="$emit('start')") Start
 
     .flex.flex-wrap.gap-2
 

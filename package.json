@@ -2,7 +2,7 @@
 	"name": "chromatone-drone",
 	"description": "Drone sound generator",
 	"private": true,
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"year": 2026,
 	"homepage": "https://drone.chromatone.center",
 	"repository": {
@@ -24,27 +24,27 @@
 	"engines": {
 		"node": "^24.x"
 	},
-	"packageManager": "pnpm@11.3.0",
+	"packageManager": "pnpm@11.20.0",
 	"scripts": {
 		"dev": "vite --host",
 		"build": "vite build",
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@unocss/reset": "^66.7.0",
-		"@vueuse/core": "^14.3.0",
+		"@unocss/reset": "^66.7.5",
+		"@vueuse/core": "^14.4.0",
 		"@vueuse/gesture": "^2.0.0",
-		"@vueuse/math": "^14.3.0",
+		"@vueuse/math": "^14.4.0",
 		"tone": "^15.1.22",
-		"vue": "^3.6.0-beta.12"
+		"vue": "^3.6.0-rc.2"
 	},
 	"devDependencies": {
-		"@unocss/extractor-pug": "^66.7.0",
-		"@vitejs/plugin-vue": "^6.0.7",
-		"@vue/language-plugin-pug": "^3.3.2",
+		"@unocss/extractor-pug": "^66.7.5",
+		"@vitejs/plugin-vue": "^6.0.8",
+		"@vue/language-plugin-pug": "^3.3.9",
 		"pug": "^3.0.4",
-		"unocss": "^66.7.0",
-		"vite": "^8.0.14",
+		"unocss": "^66.7.5",
+		"vite": "^8.2.0",
 		"vite-plugin-singlefile": "^2.3.3"
 	}
 }

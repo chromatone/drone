@@ -1,4 +1,4 @@
-import { Frequency, Synth, PanVol, gainToDb, LFO, Meter, Filter, AutoFilter, Chorus } from "tone";
+import { Frequency, Synth, PanVol, gainToDb, LFO, Meter, Filter, AutoFilter, Chorus, Distortion } from "tone";
 import { reactive, computed, shallowReactive, onBeforeUnmount, watch } from 'vue'
 import { useClamp } from "@vueuse/math";
 import { useStorage } from "@vueuse/core";
@@ -89,16 +89,30 @@ export function useVoice(interval) {
     va.autoFilter = new AutoFilter({
       frequency: voice.afFreq,
       depth: voice.afDepth,
+      baseFrequency: voice.filterFreq,
+      filter: {
+        type: "lowpass",
+        rolloff: -12,
+        Q: voice.filterQ,
+      },
+      wet: voice.afDepth > 0 ? 0.5 : 0,
     }).connect(va.chorus).start();
 
     va.filter = new Filter(voice.filterFreq, 'lowpass').connect(va.autoFilter);
     va.filter.Q.value = voice.filterQ;
 
+    va.saturation = new Distortion({
+      distortion: 0.1,
+      oversample: "4x"
+    }).connect(va.autoFilter);
+
     va.synth = new Synth({
       envelope: { attack: 2, sustain: 1, release: 4 },
-      oscillator: { type: "sawtooth32" },
+      oscillator: { type: "sawtooth", count: 3, spread: 15 },
       volume: gainToDb(voice.vol) - 10,
-    }).connect(va.filter);
+    }).connect(va.saturation);
+
+
   }
 
   function mount() {
@@ -113,9 +127,11 @@ export function useVoice(interval) {
     });
     watch(() => voice.filterFreq, (freq) => {
       va.filter.frequency.targetRampTo(freq, 0.1);
+      va.autoFilter.baseFrequency = freq;
     });
     watch(() => voice.filterQ, (q) => {
       va.filter.Q.targetRampTo(q, 0.1);
+      va.autoFilter.filter.Q.targetRampTo(q, 0.1);
     });
     watch(() => voice.afFreq, (freq) => {
       va.autoFilter.frequency.value = freq;

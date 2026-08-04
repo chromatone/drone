@@ -22,8 +22,8 @@ const intervals = reactive({
     voices: [-12, 0, 12],
   },
   fourths: {
-    title: "4P",
-    voices: [5, 17, 29],
+    title: "3M",
+    voices: [4, 16, 28],
   },
 })
 
