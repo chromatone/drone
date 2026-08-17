@@ -5,33 +5,34 @@ import { reactive, computed, shallowReactive, watch } from 'vue'
 import { useClamp } from "@vueuse/math";
 import { useStorage } from "@vueuse/core";
 
-// Centralized RAF system for voice meter updates
+// ── Single app render loop ──
+// One rAF drives all per-frame visual reads.
+// Loop lives only while voices are registered;
+// tears down automatically when the last voice unregisters.
 const voiceMeters = new Map();
 let rafCleanup = null;
 
 export function registerVoiceMeter(voiceId, meter) {
   voiceMeters.set(voiceId, meter);
-  if (!rafCleanup) {
-    startRafLoop();
-  }
+  if (!rafCleanup) startRenderLoop();
 }
 
 export function unregisterVoiceMeter(voiceId) {
   voiceMeters.delete(voiceId);
   if (voiceMeters.size === 0 && rafCleanup) {
-    rafCleanup();
+    rafCleanup.pause();
     rafCleanup = null;
   }
 }
 
-function startRafLoop() {
+function startRenderLoop() {
   rafCleanup = useRafFn(() => {
-    voiceMeters.forEach((meter, voiceId) => {
+    for (const [voiceId, meter] of voiceMeters) {
       const voice = voiceId.voice;
       if (voice && meter) {
         voice.lfo = meter.getValue();
       }
-    });
+    }
   });
 }
 

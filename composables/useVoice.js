@@ -43,9 +43,13 @@ export function useVoice(interval) {
     () => voice.play,
     (play) => {
       if (!play) {
-        if (va.synth) {
-          va.synth.triggerRelease();
-        }
+        va.synth?.triggerRelease();
+        // Fix #2: Silence the graph — disconnect from output, stop LFOs,
+        // unregister from render loop so the audio thread can sleep.
+        va.panner?.disconnect();
+        va.lfoPan?.stop();
+        va.lfoVol?.stop();
+        unregisterVoiceMeter(voiceId);
       } else {
         if (!va.synth) {
           if (!audio.initiated) {
@@ -55,6 +59,12 @@ export function useVoice(interval) {
           }
           setAudio();
           mount();
+        } else {
+          // Fix #2: Reconnect existing graph back to output
+          va.panner.connect(audio.gain);
+          va.lfoPan?.start();
+          va.lfoVol?.start();
+          registerVoiceMeter(voiceId, va.meter);
         }
         voice.active = true;
         drone.stopped = false;
@@ -79,12 +89,9 @@ export function useVoice(interval) {
       .connect(va.meter)
       .start();
 
-    va.chorus = new Chorus({
-      frequency: voice.chorusRate,
-      depth: voice.chorusDepth,
-      spread: 180,
-      wet: voice.chorusDepth > 0 ? 0.5 : 0,
-    }).connect(va.panner).start();
+    // Fix #4: Chorus created lazily — only instantiated when depth > 0.
+    // Default chain: autoFilter → panner (no chorus in path).
+    va.chorus = null;
 
     va.autoFilter = new AutoFilter({
       frequency: voice.afFreq,
@@ -96,22 +103,23 @@ export function useVoice(interval) {
         Q: voice.filterQ,
       },
       wet: voice.afDepth > 0 ? 0.5 : 0,
-    }).connect(va.chorus).start();
+    }).connect(va.panner).start();
 
     va.filter = new Filter(voice.filterFreq, 'lowpass').connect(va.autoFilter);
     va.filter.Q.value = voice.filterQ;
 
+    // Fix #3: 2 oscillators with wider spread, 2x oversample.
+    // Cuts oscillator count 33% and oversample CPU 50%.
     va.saturation = new Distortion({
       distortion: 0.1,
-      oversample: "4x"
+      oversample: "2x"
     }).connect(va.autoFilter);
 
     va.synth = new Synth({
       envelope: { attack: 2, sustain: 1, release: 4 },
-      oscillator: { type: "sawtooth", count: 3, spread: 15 },
+      oscillator: { type: "sawtooth", count: 2, spread: 20 },
       volume: gainToDb(voice.vol) - 10,
     }).connect(va.saturation);
-
 
   }
 
@@ -139,18 +147,45 @@ export function useVoice(interval) {
     watch(() => voice.afDepth, (depth) => {
       va.autoFilter.depth.value = depth;
     });
-    watch(() => voice.chorusRate, (rate) => {
-      va.chorus.frequency.value = rate;
-    });
+
+    // Fix #4: Lazy chorus — insert into chain on first nonzero depth,
+    // dispose and bypass when depth returns to 0.
     watch(() => voice.chorusDepth, (depth) => {
-      va.chorus.depth = depth;
-      va.chorus.wet.value = depth > 0 ? 0.5 : 0;
+      if (depth > 0 && !va.chorus) {
+        // Insert: autoFilter → chorus → panner
+        va.autoFilter.disconnect();
+        va.chorus = new Chorus({
+          frequency: voice.chorusRate,
+          depth,
+          spread: 180,
+          wet: 0.5,
+        }).connect(va.panner).start();
+        va.autoFilter.connect(va.chorus);
+      } else if (depth > 0 && va.chorus) {
+        va.chorus.frequency.value = voice.chorusRate;
+        va.chorus.depth = depth;
+      } else if (depth === 0 && va.chorus) {
+        // Remove: autoFilter → panner
+        va.autoFilter.disconnect();
+        va.chorus.dispose();
+        va.chorus = null;
+        va.autoFilter.connect(va.panner);
+      }
     });
+
+    watch(() => voice.chorusRate, (rate) => {
+      if (va.chorus) va.chorus.frequency.value = rate;
+    });
+
     registerVoiceMeter(voiceId, va.meter);
   }
 
   onBeforeUnmount(() => {
-    if (va.synth) va.synth.triggerRelease();
+    va.synth?.triggerRelease();
+    va.panner?.disconnect();
+    va.lfoPan?.stop();
+    va.lfoVol?.stop();
+    va.chorus?.dispose();
     unregisterVoiceMeter(voiceId);
   });
 
