@@ -57,7 +57,7 @@ function handleStart() {
 </script>
 
 <template lang="pug">
-.flex.flex-col.items-stretch.justify-between.transition-all.duration-500.ease-out.select-none.rounded-8.shadow-xl.border-8.p-1.w-full.h-full(
+.flex.flex-col.items-stretch.justify-between.transition-colors.duration-500.ease-out.select-none.rounded-8.shadow-xl.border-8.p-1.w-full.h-full(
   :style="{ borderColor: pitchColor(drone.pitch, 2), backgroundColor: pitchColor(drone.pitch, 3, 0.2, 0.8) }")
 
   OverlaySplash(v-if="info" @start="handleStart" @close="info = false")
@@ -65,24 +65,24 @@ function handleStart() {
   .flex-1.justify-between.flex.flex-col.px-2.pt-3.gap-4.text-white
 
     .flex.flex.justify-stretch.items-stretch.gap-2
-      button.w-16.p-2.border-2.rounded-2xl.text-xl.op-50.hover-op-100.transition(@click="drone.pitch--" :style="{ backgroundColor: pitchColor(drone.pitch - 1, 3, 1, 0.4) }") {{ notes[(drone.pitch - 1 < 0 ? 11 : drone.pitch - 1) % 12] }}
+      button.w-14.p-2.border-2.rounded-2xl.text-xl.op-50.hover-op-100.transition(@click="drone.pitch--" :style="{ backgroundColor: pitchColor(drone.pitch - 1, 3, 1, 0.4) }") {{ notes[(drone.pitch - 1 < 0 ? 11 : drone.pitch - 1) % 12] }}
 
-      .flex.gap-2.border-2.flex-wrap.p-4.flex-1.min-w-10em.items-center.rounded-2xl.text-white.p-2.cursor-pointer.transition-all.duration-1500.ease-out.cursor-grab.relative(
+      .flex.gap-2.border-2.flex-wrap.p-2.flex-1.min-w-10em.items-center.rounded-2xl.text-white.p-2.cursor-pointer.transition-all.duration-1500.ease-out.cursor-grab.relative(
         style="flex: 1 1 400px"
         ref="pitchControl"
         :style="{ backgroundColor: drone.color }")
         .flex.w-full.items-center.gap-2
-          .p-1.text-5xl.font-bold {{ drone.note }} 
-          .flex.flex-col.text-md
+          .p-1.text-4xl.font-bold {{ drone.note }} 
+          .flex.flex-col.text-xs
             .p-0 {{ drone.centDiff }}%
             .p-0 {{ drone.freq.toFixed(2) }} Hz
 
       button.w-16.p-2.border-2.rounded-2xl.text-xl.op-50.hover-op-100.transition(@click="drone.pitch++" :style="{ backgroundColor: pitchColor(drone.pitch + 1, 3, 1, 0.4) }") {{ notes[(drone.pitch + 1) % 12] }}
 
       .flex.flex-col.gap-2.justify-between.items-center
-        button.w-12.p-2.text-2xl.border-2.rounded-2xl.text-2xl(@click="drone.stopped = true; info = true")
+        button.w-10.p-1.text-2xl.border-1.rounded-2xl.text-2xl(@click="drone.stopped = true; info = true")
           img.w-8.op-75.hover-op-100.transition(src="/logo.svg" alt="Chromatone logo")
-        control-rotary.w-14(
+        control-rotary.w-12(
           :class="{ 'op-50': drone.stopped }"
           v-model="drone.volume"
           :min="0.001" :max="1" :step="0.01" :fixed="2"

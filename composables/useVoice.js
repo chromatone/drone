@@ -1,11 +1,9 @@
-import { Frequency, Synth, PanVol, gainToDb, LFO, Meter, Filter, AutoFilter, Chorus, Distortion } from "tone";
+import { Frequency, Synth, PanVol, gainToDb, LFO, Meter, AutoFilter, Chorus, Distortion } from "tone";
 import { reactive, computed, shallowReactive, onBeforeUnmount, watch } from 'vue'
 import { useClamp } from "@vueuse/math";
 import { useStorage } from "@vueuse/core";
 import { pitchColor } from "./calculations";
 import { drone, audio, initAudio, registerVoiceMeter, unregisterVoiceMeter } from "./useDrone";
-
-let voiceCount = 0;
 
 export function useVoice(interval) {
   const va = shallowReactive({});
@@ -29,7 +27,6 @@ export function useVoice(interval) {
   });
 
   voiceId.voice = voice;
-  voiceCount += 2;
 
   watch(
     () => drone.stopped,
@@ -44,8 +41,6 @@ export function useVoice(interval) {
     (play) => {
       if (!play) {
         va.synth?.triggerRelease();
-        // Fix #2: Silence the graph — disconnect from output, stop LFOs,
-        // unregister from render loop so the audio thread can sleep.
         va.panner?.disconnect();
         va.lfoPan?.stop();
         va.lfoVol?.stop();
@@ -60,7 +55,6 @@ export function useVoice(interval) {
           setAudio();
           mount();
         } else {
-          // Fix #2: Reconnect existing graph back to output
           va.panner.connect(audio.gain);
           va.lfoPan?.start();
           va.lfoVol?.start();
@@ -78,7 +72,6 @@ export function useVoice(interval) {
 
     va.panner = new PanVol({ volume: gainToDb(drone.volume) }).connect(audio.gain);
 
-    // Pan: base value on AudioParam, LFO adds on top additively
     va.panner.pan.value = voice.pan;
     va.lfoPan = new LFO(Math.random() * 0.5 + 0.01, -0.25, 0.25)
       .connect(va.panner.pan)
@@ -89,8 +82,8 @@ export function useVoice(interval) {
       .connect(va.meter)
       .start();
 
-    // Fix #4: Chorus created lazily — only instantiated when depth > 0.
-    // Default chain: autoFilter → panner (no chorus in path).
+    // Chorus created lazily — only when depth > 0.
+    // Default chain: autoFilter → panner
     va.chorus = null;
 
     va.autoFilter = new AutoFilter({
@@ -102,14 +95,10 @@ export function useVoice(interval) {
         rolloff: -12,
         Q: voice.filterQ,
       },
-      wet: voice.afDepth > 0 ? 0.5 : 0,
+      wet: 1,
     }).connect(va.panner).start();
 
-    va.filter = new Filter(voice.filterFreq, 'lowpass').connect(va.autoFilter);
-    va.filter.Q.value = voice.filterQ;
-
-    // Fix #3: 2 oscillators with wider spread, 2x oversample.
-    // Cuts oscillator count 33% and oversample CPU 50%.
+    // 2 oscillators with wider spread, 2x oversample.
     va.saturation = new Distortion({
       distortion: 0.1,
       oversample: "2x"
@@ -120,7 +109,6 @@ export function useVoice(interval) {
       oscillator: { type: "sawtooth", count: 2, spread: 20 },
       volume: gainToDb(voice.vol) - 10,
     }).connect(va.saturation);
-
   }
 
   function mount() {
@@ -134,11 +122,9 @@ export function useVoice(interval) {
       va.panner.pan.targetRampTo(pan, 0.1);
     });
     watch(() => voice.filterFreq, (freq) => {
-      va.filter.frequency.targetRampTo(freq, 0.1);
       va.autoFilter.baseFrequency = freq;
     });
     watch(() => voice.filterQ, (q) => {
-      va.filter.Q.targetRampTo(q, 0.1);
       va.autoFilter.filter.Q.targetRampTo(q, 0.1);
     });
     watch(() => voice.afFreq, (freq) => {
@@ -148,11 +134,10 @@ export function useVoice(interval) {
       va.autoFilter.depth.value = depth;
     });
 
-    // Fix #4: Lazy chorus — insert into chain on first nonzero depth,
+    // Lazy chorus — insert into chain on first nonzero depth,
     // dispose and bypass when depth returns to 0.
     watch(() => voice.chorusDepth, (depth) => {
       if (depth > 0 && !va.chorus) {
-        // Insert: autoFilter → chorus → panner
         va.autoFilter.disconnect();
         va.chorus = new Chorus({
           frequency: voice.chorusRate,
@@ -165,7 +150,6 @@ export function useVoice(interval) {
         va.chorus.frequency.value = voice.chorusRate;
         va.chorus.depth = depth;
       } else if (depth === 0 && va.chorus) {
-        // Remove: autoFilter → panner
         va.autoFilter.disconnect();
         va.chorus.dispose();
         va.chorus = null;

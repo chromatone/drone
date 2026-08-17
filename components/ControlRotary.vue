@@ -45,12 +45,12 @@ useGesture({
   onDrag: ({ delta: [x, y], dragging, shiftKey, event }) => {
     if (event) event.preventDefault();
     const diff = shiftKey ? 12 : event.type === 'wheel' ? -8 : 2;
-    state.internal = useClamp(0, state.internal - y / diff + x / diff, 100);
+    state.internal = useClamp(state.internal - y / diff + x / diff, 0, 100);
     model.value = external.value;
   },
   onWheel: ({ delta: [x, y], event }) => {
     if (event) event.preventDefault();
-    state.internal = useClamp(0, state.internal + y / 8 - x / 8, 100);
+    state.internal = useClamp(state.internal + y / 8 - x / 8, 0, 100);
     model.value = external.value;
   }
 }, {
